@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Simpleditor
 
 Simpleditor 是一个基于 Vue 2、Tiptap 3 和 Vite 的在线文档编辑器，支持在线批注。
@@ -120,3 +121,7 @@ npm run preview
 ## 备注
 
 - 本地草稿和历史导出文件已保留旧键名兼容读取逻辑。
+=======
+# simpleditor
+Simpleditor 是一个基于 Vue 2、Tiptap 3 和 Vite 的在线文档编辑器，支持在线批注。
+>>>>>>> a86a8a07f2ae474e02ee9b319ec3fac339b3a2f3
