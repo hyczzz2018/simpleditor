@@ -1,0 +1,20 @@
+:root {
+  --gxjt-bg: #eff4f3;
+  --gxjt-panel: rgba(255, 255, 255, 0.88);
+  --gxjt-line: #d6e0dd;
+  --gxjt-text: #1f2937;
+  --gxjt-subtle: #5b6874;
+  --gxjt-brand: #0f766e;
+  --gxjt-brand-strong: #115e59;
+  --gxjt-paper: #ffffff;
+  --gxjt-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.app-main {
+  min-height: calc(100vh - 36px);
+}
