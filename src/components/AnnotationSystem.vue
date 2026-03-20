@@ -14,7 +14,10 @@
         placeholder="输入批注内容"
         @input="$emit('update-draft', $event.target.value)"
       />
-      <button class="toolbar-btn toolbar-btn--primary" @click="$emit('save')">添加批注</button>
+      <div class="annotation-draft-actions">
+        <button class="toolbar-btn" @click="$emit('reset-draft')">重置选择</button>
+        <button class="toolbar-btn toolbar-btn--primary" @click="$emit('save')">添加批注</button>
+      </div>
     </div>
 
     <div class="annotation-list">

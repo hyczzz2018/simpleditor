@@ -56,11 +56,12 @@
         :draft-text="annotationState.draft.text"
         :draft-content="annotationState.draft.content"
         :annotations="annotationState.items"
-        @close="annotationState.visible = false"
+        @close="closeAnnotationPanel"
         @activate="activateAnnotationById"
         @hover="hoverAnnotation"
         @leave="clearHoveredAnnotation"
         @update-draft="updateAnnotationDraft"
+        @reset-draft="clearAnnotationDraftSelection"
         @save="saveAnnotation"
         @reply="replyToAnnotation"
         @resolve="setAnnotationStatus"
@@ -102,6 +103,7 @@ import {
   removeAnnotation as dropAnnotation,
   saveAnnotation as persistAnnotation,
   setAnnotationStatus as updateAnnotationStatus,
+  resetAnnotationDraft,
   updateAnnotationDraft,
   updateAnnotationSelection,
 } from '../composables/useAnnotations'
@@ -537,10 +539,14 @@ export default {
     toggleAnnotationMode() {
       const next = !this.annotationMode
       this.$store.commit('patchState', { annotationMode: next })
-      this.annotationState.visible = true
-      if (next) {
-        showMessage('批注模式已开启，选中文本后可添加批注。')
+
+      if (!next) {
+        this.closeAnnotationPanel()
+        return
       }
+
+      this.annotationState.visible = true
+      showMessage('批注模式已开启，选中文本后可添加批注。')
     },
     captureAnnotationSelection() {
       if (!this.annotationMode || !this.editor) return
@@ -555,6 +561,18 @@ export default {
     },
     updateAnnotationDraft(content) {
       updateAnnotationDraft(this.annotationState, content)
+    },
+    clearAnnotationDraftSelection() {
+      resetAnnotationDraft(this.annotationState)
+
+      if (this.editor) {
+        const { to } = this.editor.state.selection
+        this.editor.chain().focus().setTextSelection(to).run()
+      }
+    },
+    closeAnnotationPanel() {
+      this.annotationState.visible = false
+      this.clearAnnotationDraftSelection()
     },
     saveAnnotation() {
       const draft = this.annotationState.draft

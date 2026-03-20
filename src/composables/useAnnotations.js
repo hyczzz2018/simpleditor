@@ -99,3 +99,7 @@ export function removeAnnotation(state, id) {
 export function activateAnnotation(state, id) {
   state.activeId = id || ''
 }
+
+export function resetAnnotationDraft(state) {
+  state.draft = { text: '', content: '', from: 0, to: 0 }
+}
