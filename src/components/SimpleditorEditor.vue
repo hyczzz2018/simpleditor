@@ -10,6 +10,7 @@
       :annotation-mode="annotationMode"
       :formats="formats"
       :is-dark-theme="isDarkTheme"
+      @new-document="requestNewDocument"
       @import-file="importFile"
       @save-document="saveDocument"
       @export-file="exportFile"
@@ -81,6 +82,15 @@
 
     <ShortcutPanel :visible="shortcutPanelVisible" :is-dark="isDarkTheme" @close="shortcutPanelVisible = false" />
     <Tooltip :visible="tooltip.visible" :text="tooltip.text" :x="tooltip.x" :y="tooltip.y" />
+    <ConfirmationDialog
+      :visible="confirmDialog.visible"
+      :title="confirmDialog.title"
+      :message="confirmDialog.message"
+      :confirm-text="confirmDialog.confirmText"
+      :confirm-variant="confirmDialog.confirmVariant"
+      @cancel="closeConfirmDialog"
+      @confirm="handleConfirmDialog"
+    />
   </section>
 </template>
 
@@ -90,6 +100,7 @@ import AnnotationSystem from './AnnotationSystem.vue'
 import EditorStatusBar from './EditorStatusBar.vue'
 import ShortcutPanel from './ShortcutPanel.vue'
 import Tooltip from './Tooltip.vue'
+import ConfirmationDialog from './ConfirmationDialog.vue'
 import TiptapEditor from './TiptapEditor.vue'
 import TiptapCore from '../core/TiptapCore'
 import WordHandler from '../fileHandlers/WordHandler'
@@ -124,6 +135,7 @@ export default {
     ShortcutPanel,
     Tooltip,
     TiptapEditor,
+    ConfirmationDialog,
   },
   data() {
     return {
@@ -142,6 +154,15 @@ export default {
         text: '',
         x: 0,
         y: 0,
+      },
+      confirmDialog: {
+        visible: false,
+        title: '',
+        message: '',
+        confirmText: '确认',
+        confirmVariant: 'primary',
+        action: '',
+        payload: null,
       },
       annotationLine: {
         visible: false,
@@ -287,6 +308,40 @@ export default {
     saveDocument() {
       this.clearAutoSaveTimer()
       this.persistDraft()
+    },
+    requestNewDocument() {
+      this.openConfirmDialog({
+        title: '新建空白文档',
+        message: '确认新建空白文档吗？当前正文、批注和本地草稿都会被清空。',
+        confirmText: '新建文档',
+        action: 'new-document',
+      })
+    },
+    executeNewDocument() {
+      this.clearAutoSaveTimer()
+
+      if (this.editor) {
+        this.editor.commands.setContent('<p></p>')
+      }
+
+      resetAnnotationDraft(this.annotationState)
+      loadAnnotations(this.annotationState, [])
+      this.annotationState.visible = false
+      this.hoverAnnotationId = ''
+      this.annotationLine.visible = false
+      this.annotationLine.path = ''
+      this.lastSavedAt = ''
+
+      window.localStorage.removeItem(LOCAL_DRAFT_KEY)
+      window.localStorage.removeItem(LEGACY_LOCAL_DRAFT_KEY)
+
+      this.$store.commit('patchState', { annotationMode: false })
+      this.$store.commit('setHtml', '<p></p>')
+      this.$store.commit('setSaved', true)
+      this.syncStats()
+      this.syncToolbarState()
+      this.syncCommentHighlights()
+      showMessage('已新建空白文档。')
     },
     scheduleAutoSave() {
       this.clearAutoSaveTimer()
@@ -651,12 +706,7 @@ export default {
         view.dispatch(tr)
       }
     },
-    removeAnnotation(id) {
-      const confirmed = window.confirm('确认删除这条批注吗？')
-      if (!confirmed) {
-        return
-      }
-
+    executeRemoveAnnotation(id) {
       this.removeAnnotationMark(id)
       dropAnnotation(this.annotationState, id)
       if (this.annotationState.activeId === id) {
@@ -669,6 +719,16 @@ export default {
       this.syncCommentHighlights()
       this.updateAnnotationLine()
       this.scheduleAutoSave()
+    },
+    removeAnnotation(id) {
+      this.openConfirmDialog({
+        title: '删除批注',
+        message: '确认删除这条批注吗？删除后无法恢复。',
+        confirmText: '删除',
+        confirmVariant: 'danger',
+        action: 'remove-annotation',
+        payload: id,
+      })
     },
     toggleReadOnly() {
       const next = !this.editorState.readOnly
@@ -688,6 +748,41 @@ export default {
     },
     hideTooltip() {
       this.tooltip.visible = false
+    },
+    openConfirmDialog(options = {}) {
+      this.confirmDialog = {
+        visible: true,
+        title: options.title || '确认操作',
+        message: options.message || '',
+        confirmText: options.confirmText || '确认',
+        confirmVariant: options.confirmVariant || 'primary',
+        action: options.action || '',
+        payload: options.payload === undefined ? null : options.payload,
+      }
+    },
+    closeConfirmDialog() {
+      this.confirmDialog = {
+        visible: false,
+        title: '',
+        message: '',
+        confirmText: '确认',
+        confirmVariant: 'primary',
+        action: '',
+        payload: null,
+      }
+    },
+    handleConfirmDialog() {
+      const { action, payload } = this.confirmDialog
+      this.closeConfirmDialog()
+
+      if (action === 'remove-annotation') {
+        this.executeRemoveAnnotation(payload)
+        return
+      }
+
+      if (action === 'new-document') {
+        this.executeNewDocument()
+      }
     },
     importFile() {
       this.$refs.fileInput.click()

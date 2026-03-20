@@ -688,3 +688,63 @@ kbd {
   font-size: 11px;
   letter-spacing: 0.01em;
 }
+
+
+.annotation-draft-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.confirm-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.28);
+  backdrop-filter: blur(4px);
+}
+
+.confirm-dialog-card {
+  width: min(100%, 420px);
+  padding: 22px;
+  border: 1px solid #d9e1ee;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+}
+
+.confirm-dialog-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gxjt-text);
+}
+
+.confirm-dialog-message {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--gxjt-text-soft);
+}
+
+.confirm-dialog-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirm-dialog-btn--danger {
+  color: #ffffff;
+  border-color: #dc2626;
+  background: #ef4444;
+}
+
+.confirm-dialog-btn--danger:hover {
+  border-color: #b91c1c;
+  background: #dc2626;
+}

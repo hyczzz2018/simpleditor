@@ -3,6 +3,9 @@
     <div class="doc-toolbar">
     <div class="toolbar-cluster">
       <div class="button-group">
+        <button class="toolbar-btn toolbar-btn--icon" @mouseenter="tip($event, '新建空白文档')" @mousemove="tip($event, '新建空白文档')" @mouseleave="leave" @click="$emit('new-document')">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L17.5 8H14zM11 10V7h2v3h3v2h-3v3h-2v-3H8v-2z"/></svg>
+        </button>
         <button class="toolbar-btn toolbar-btn--icon" @mouseenter="tip($event, '导入文档')" @mousemove="tip($event, '导入文档')" @mouseleave="leave" @click="$emit('import-file')">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2.5L17.5 8H14zM12 18l-4-4h2.6v-3h2.8v3H16z"/></svg>
         </button>
