@@ -89,12 +89,6 @@ npm run preview
 - 支持本地草稿恢复
 - 导出 `docx` 后，再用本项目导入时可恢复批注数据
 
-说明：
-- 导出的 `docx` 已写入标准 Word 批注结构。
-- 更深层的 Word/WPS 线程批注完全兼容仍可继续增强。
-
-## 项目结构
-
 ```text
 src/
   assets/css/          样式文件
