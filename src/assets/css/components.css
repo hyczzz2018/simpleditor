@@ -609,10 +609,14 @@ kbd {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 
 .annotation-card-head {
-  align-items: center;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .annotation-card--compact .annotation-author {
@@ -621,6 +625,7 @@ kbd {
 
 .annotation-card--compact .annotation-time {
   margin: 0;
+  flex: 0 0 auto;
   font-size: 11px;
   white-space: nowrap;
 }

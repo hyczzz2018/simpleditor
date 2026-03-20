@@ -41,7 +41,7 @@
             <p class="annotation-author">{{ item.author }}</p>
             <span class="annotation-status">{{ item.status === 'resolved' ? '已解决' : '处理中' }}</span>
           </div>
-          <p class="annotation-time">{{ item.createdAt }}</p>
+          <p class="annotation-time">{{ formatTimestamp(item.createdAt) }}</p>
         </div>
 
         <p class="annotation-content">{{ item.content }}</p>
@@ -57,7 +57,7 @@
           <div v-for="reply in item.replies" :key="reply.id" class="annotation-reply">
             <p class="annotation-reply-author">{{ reply.author }}</p>
             <p class="annotation-reply-content">{{ reply.content }}</p>
-            <p class="annotation-reply-time">{{ reply.createdAt }}</p>
+            <p class="annotation-reply-time">{{ formatTimestamp(reply.createdAt) }}</p>
           </div>
         </div>
 
@@ -109,6 +109,19 @@ export default {
     }
   },
   methods: {
+    formatTimestamp(value) {
+      if (!value) {
+        return ''
+      }
+
+      const date = new Date(value)
+      if (Number.isNaN(date.getTime())) {
+        return String(value).replace('T', ' ').replace('Z', '')
+      }
+
+      const pad = part => String(part).padStart(2, '0')
+      return `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+    },
     toggleReply(id) {
       // 回复编辑器同一时间只允许展开一条，避免侧栏同时出现多块输入框。
       if (this.replyingId === id) {
