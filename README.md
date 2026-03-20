@@ -12,7 +12,7 @@ Simpleditor 是一个基于 Vue 2、Tiptap 3 和 Vite 的在线文档编辑器�
 ### 1. 拉取代码
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/hyczzz2018/simpleditor.git
 cd simpleditor
 ```
 
